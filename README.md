@@ -4,6 +4,8 @@ Self-hosted web UI to download YouTube videos as MP3 or MP4. Paste a link, click
 
 [![Docker](https://github.com/piitaya/tubeasy/actions/workflows/docker.yml/badge.svg)](https://github.com/piitaya/tubeasy/actions/workflows/docker.yml)
 
+![Tubeasy UI](docs/screenshot.png)
+
 ## Quick start (prebuilt image)
 
 The image is published to GitHub Container Registry on every push to `main` (multi-arch `amd64` + `arm64`, so it runs fine on Raspberry Pi, NAS, etc.).
@@ -15,6 +17,7 @@ services:
   tubeasy:
     image: ghcr.io/piitaya/tubeasy:latest
     container_name: tubeasy
+    user: "${PUID:-1000}:${PGID:-1000}"
     ports:
       - "8000:8000"
     volumes:
@@ -22,13 +25,25 @@ services:
     restart: unless-stopped
 ```
 
-Then:
+Create the downloads folder with the right ownership, then bring it up:
 
 ```bash
+mkdir -p downloads
 docker compose up -d
 ```
 
 Open [http://localhost:8000](http://localhost:8000). Files land in `./downloads/`.
+
+### Permissions
+
+The container runs as `1000:1000` by default, which matches most Linux desktop users. If your host user has a different UID/GID, set `PUID` and `PGID` in a `.env` file next to `docker-compose.yml`:
+
+```env
+PUID=1000
+PGID=1000
+```
+
+Use `id` on the host to get your UID/GID. The `downloads/` folder must be writable by that user (`chown -R $PUID:$PGID downloads` if needed).
 
 ## Usage
 

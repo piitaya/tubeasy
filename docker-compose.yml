@@ -2,6 +2,7 @@ services:
   web:
     build: .
     container_name: tubeasy
+    user: "${PUID:-1000}:${PGID:-1000}"
     ports:
       - "8000:8000"
     volumes:
