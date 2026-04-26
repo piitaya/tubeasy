@@ -116,4 +116,4 @@ Built with [Claude](https://claude.ai/) on a day I'd had enough of overcomplicat
 
 ## License
 
-MIT
+[MIT](LICENSE)
