@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -380,7 +380,7 @@
   <div class="container">
     <header>
       <h1>Tubeasy</h1>
-      <p>Colle un lien YouTube, télécharge en MP3 ou MP4.</p>
+      <p>Paste a YouTube link, download it as MP3 or MP4.</p>
     </header>
 
     <div class="card">
@@ -401,14 +401,14 @@
             <button type="button" data-format="mp4" role="tab" aria-selected="false">MP4</button>
           </div>
           <button type="submit" class="btn-primary" id="submit">
-            <span id="submit-label">Télécharger</span>
+            <span id="submit-label">Download</span>
           </button>
         </div>
         <div class="alert" id="alert" role="alert"></div>
       </form>
     </div>
 
-    <div class="section-title">Historique</div>
+    <div class="section-title">History</div>
     <ul class="file-list" id="files"></ul>
   </div>
 
@@ -457,33 +457,33 @@
     submitBtn.disabled = loading;
     urlInput.disabled = loading;
     if (loading) {
-      submitLabel.textContent = 'Téléchargement…';
+      submitLabel.textContent = 'Downloading…';
       const spinner = document.createElement('span');
       spinner.className = 'spinner';
       submitBtn.prepend(spinner);
     } else {
-      submitLabel.textContent = 'Télécharger';
+      submitLabel.textContent = 'Download';
       const spinner = submitBtn.querySelector('.spinner');
       if (spinner) spinner.remove();
     }
   }
 
   function formatSize(bytes) {
-    if (bytes < 1024) return `${bytes} o`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} Ko`;
-    if (bytes < 1024 * 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} Mo`;
-    return `${(bytes / 1024 / 1024 / 1024).toFixed(2)} Go`;
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    if (bytes < 1024 * 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+    return `${(bytes / 1024 / 1024 / 1024).toFixed(2)} GB`;
   }
 
   function formatRelative(epochSeconds) {
     const diff = Date.now() / 1000 - epochSeconds;
-    if (diff < 60) return 'à l’instant';
-    if (diff < 3600) return `il y a ${Math.floor(diff / 60)} min`;
-    if (diff < 86400) return `il y a ${Math.floor(diff / 3600)} h`;
-    if (diff < 86400 * 2) return 'hier';
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    if (diff < 86400 * 2) return 'yesterday';
     const days = Math.floor(diff / 86400);
-    if (days < 7) return `il y a ${days} j`;
-    return new Date(epochSeconds * 1000).toLocaleDateString('fr-FR');
+    if (days < 7) return `${days}d ago`;
+    return new Date(epochSeconds * 1000).toLocaleDateString('en-US');
   }
 
   function isAudio(name) {
@@ -494,7 +494,7 @@
     filesList.innerHTML = `
       <li class="empty">
         ${ICONS.inbox}
-        <div>Aucun téléchargement pour l'instant</div>
+        <div>No downloads yet</div>
       </li>`;
   }
 
@@ -531,15 +531,15 @@
       dl.className = 'icon-btn';
       dl.href = `/api/files/${encodeURIComponent(f.filename)}`;
       dl.setAttribute('download', f.filename);
-      dl.title = 'Télécharger';
-      dl.setAttribute('aria-label', 'Télécharger');
+      dl.title = 'Download';
+      dl.setAttribute('aria-label', 'Download');
       dl.innerHTML = ICONS.download;
 
       const del = document.createElement('button');
       del.type = 'button';
       del.className = 'icon-btn danger';
-      del.title = 'Supprimer';
-      del.setAttribute('aria-label', 'Supprimer');
+      del.title = 'Delete';
+      del.setAttribute('aria-label', 'Delete');
       del.innerHTML = ICONS.trash;
       del.addEventListener('click', () => askDelete(li, f.filename, del));
 
@@ -559,11 +559,11 @@
     pill.className = 'confirm-pill';
     const cancel = document.createElement('button');
     cancel.type = 'button';
-    cancel.textContent = 'Annuler';
+    cancel.textContent = 'Cancel';
     const confirm = document.createElement('button');
     confirm.type = 'button';
     confirm.className = 'confirm';
-    confirm.textContent = 'Supprimer';
+    confirm.textContent = 'Delete';
     pill.append(cancel, confirm);
     actions.append(pill);
 
@@ -589,7 +589,7 @@
         setTimeout(loadFiles, 180);
       } catch {
         restore();
-        showError('Suppression impossible.');
+        showError("Couldn't delete file.");
       }
     });
   }
@@ -618,7 +618,7 @@
         body: JSON.stringify({ url, format: currentFormat }),
       });
       if (!res.ok) {
-        let detail = 'Échec du téléchargement.';
+        let detail = 'Download failed.';
         try {
           const data = await res.json();
           if (data && data.detail) detail = typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail);
@@ -628,7 +628,7 @@
       urlInput.value = '';
       await loadFiles();
     } catch (err) {
-      showError(err.message || 'Une erreur est survenue.');
+      showError(err.message || 'Something went wrong.');
     } finally {
       setLoading(false);
     }

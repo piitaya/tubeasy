@@ -1,14 +1,14 @@
 # Tubeasy
 
-Petite interface self-hosted pour télécharger une vidéo YouTube en MP3 ou MP4 depuis un simple lien. Construite avec [yt-dlp](https://github.com/yt-dlp/yt-dlp), FastAPI et un poil de vanilla JS.
+Self-hosted web UI to download YouTube videos as MP3 or MP4. Paste a link, click, get the file. Built with [yt-dlp](https://github.com/yt-dlp/yt-dlp), FastAPI, and a sprinkle of vanilla JS.
 
 [![Docker](https://github.com/piitaya/tubeasy/actions/workflows/docker.yml/badge.svg)](https://github.com/piitaya/tubeasy/actions/workflows/docker.yml)
 
-## Démarrage rapide (image pré-buildée)
+## Quick start (prebuilt image)
 
-L'image est publiée sur GitHub Container Registry à chaque push sur `main` (multi-arch `amd64` + `arm64`, donc OK sur Raspberry Pi, NAS, etc.).
+The image is published to GitHub Container Registry on every push to `main` (multi-arch `amd64` + `arm64`, so it runs fine on Raspberry Pi, NAS, etc.).
 
-`docker-compose.yml` :
+`docker-compose.yml`:
 
 ```yaml
 services:
@@ -22,46 +22,46 @@ services:
     restart: unless-stopped
 ```
 
-Puis :
+Then:
 
 ```bash
 docker compose up -d
 ```
 
-Ouvre [http://localhost:8000](http://localhost:8000). Les fichiers atterrissent dans `./downloads/`.
+Open [http://localhost:8000](http://localhost:8000). Files land in `./downloads/`.
 
-## Utilisation
+## Usage
 
-1. Colle l'URL de la vidéo YouTube
-2. Choisis MP3 ou MP4
-3. Clique "Télécharger"
-4. Récupère le fichier depuis l'historique (lien direct ou suppression)
+1. Paste the YouTube URL
+2. Pick MP3 or MP4
+3. Click "Download"
+4. Grab the file from the history (direct link or delete)
 
-## Build local
+## Build locally
 
-Si tu préfères builder l'image toi-même (depuis une copie du repo) :
+If you'd rather build the image yourself (from a clone of the repo):
 
 ```bash
 docker compose up -d --build
 ```
 
-## Mise à jour
+## Updating
 
-Image pré-buildée :
+Prebuilt image:
 
 ```bash
 docker compose pull && docker compose up -d
 ```
 
-Build local :
+Local build:
 
 ```bash
 docker compose build --no-cache && docker compose up -d
 ```
 
-## Cookies (optionnel)
+## Cookies (optional)
 
-Si YouTube te demande de prouver que tu n'es pas un robot, exporte un fichier `cookies.txt` (extension Chrome "Get cookies.txt LOCALLY" par exemple), pose-le à la racine du projet, ajoute le mount dans `docker-compose.yml` :
+If YouTube asks you to prove you're not a bot, export a `cookies.txt` file (e.g. with the "Get cookies.txt LOCALLY" Chrome extension), drop it at the project root, then add the mount in `docker-compose.yml`:
 
 ```yaml
     volumes:
@@ -69,15 +69,15 @@ Si YouTube te demande de prouver que tu n'es pas un robot, exporte un fichier `c
       - ./cookies.txt:/app/cookies.txt:ro
 ```
 
-Puis passe `cookiefile: "/app/cookies.txt"` dans les options yt-dlp côté `app/main.py`.
+Then pass `cookiefile: "/app/cookies.txt"` in the yt-dlp options in `app/main.py`.
 
-## Tags d'image disponibles
+## Available image tags
 
-- `latest` — dernier build de `main`
-- `vX.Y.Z` — release taguée (push d'un tag git `v*.*.*`)
-- `X.Y` — alias majeur.mineur
-- `main` — alias de la branche
-- `pr-N` / `sha-XXXXXXX` — builds intermédiaires
+- `latest` — latest build from `main`
+- `vX.Y.Z` — tagged release (push a `v*.*.*` git tag)
+- `X.Y` — major.minor alias
+- `main` — branch alias
+- `pr-N` / `sha-XXXXXXX` — intermediate builds
 
 ## Structure
 
@@ -88,13 +88,17 @@ Puis passe `cookiefile: "/app/cookies.txt"` dans les options yt-dlp côté `app/
 │   └── static/
 │       └── index.html # UI
 ├── .github/workflows/
-│   └── docker.yml     # build + push GHCR
-├── downloads/         # fichiers téléchargés (créé au runtime)
+│   └── docker.yml     # build + push to GHCR
+├── downloads/         # downloaded files (created at runtime)
 ├── Dockerfile
 ├── docker-compose.yml
 └── requirements.txt
 ```
 
-## Licence
+## Credits
+
+Built with [Claude](https://claude.ai/) on a day I'd had enough of overcomplicated YouTube downloader projects.
+
+## License
 
 MIT
