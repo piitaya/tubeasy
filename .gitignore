@@ -1,0 +1,12 @@
+downloads/
+cookies.txt
+
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.env
+
+.DS_Store
+.idea/
+.vscode/

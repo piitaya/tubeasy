@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    container_name: tubeasy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./downloads:/app/downloads
+      # - ./cookies.txt:/app/cookies.txt:ro
+    restart: unless-stopped

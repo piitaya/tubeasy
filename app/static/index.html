@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Tubeasy</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --surface: #ffffff;
+    --border: #ececec;
+    --text: #0a0a0a;
+    --text-muted: #6b7280;
+    --text-subtle: #9ca3af;
+    --accent: #ef4444;
+    --accent-hover: #dc2626;
+    --accent-soft: #fef2f2;
+    --danger: #ef4444;
+    --danger-soft: #fef2f2;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+    --radius-card: 12px;
+    --radius-control: 8px;
+    --transition: 150ms ease;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --border: #262626;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --text-subtle: #6b7280;
+      --accent: #ef4444;
+      --accent-hover: #f87171;
+      --accent-soft: rgba(239, 68, 68, 0.12);
+      --danger-soft: rgba(239, 68, 68, 0.12);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+  }
+
+  header {
+    margin-bottom: 32px;
+  }
+
+  header h1 {
+    margin: 0 0 4px;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  header p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  input[type="url"] {
+    width: 100%;
+    padding: 11px 14px;
+    font: inherit;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-control);
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+
+  input[type="url"]:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  input[type="url"]::placeholder {
+    color: var(--text-subtle);
+  }
+
+  .controls {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .segmented {
+    display: inline-flex;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-control);
+    padding: 3px;
+    gap: 2px;
+  }
+
+  .segmented button {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    padding: 7px 14px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+  }
+
+  .segmented button:hover:not(.active) {
+    color: var(--text);
+  }
+
+  .segmented button.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+
+  .btn-primary {
+    flex: 1;
+    appearance: none;
+    border: none;
+    background: var(--accent);
+    color: #ffffff;
+    padding: 11px 18px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: var(--radius-control);
+    cursor: pointer;
+    transition: background var(--transition), transform var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: var(--accent-hover);
+  }
+
+  .btn-primary:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .alert {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: var(--danger-soft);
+    color: var(--danger);
+    border-radius: var(--radius-control);
+    font-size: 13px;
+    display: none;
+  }
+
+  .alert.visible { display: block; }
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 28px 4px 10px;
+  }
+
+  .file-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-control);
+    transition: border-color var(--transition), background var(--transition);
+    animation: fade-in 220ms ease both;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .file-item.removing {
+    animation: fade-out 180ms ease forwards;
+  }
+
+  @keyframes fade-out {
+    to { opacity: 0; transform: translateY(-4px); }
+  }
+
+  .file-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border-radius: 8px;
+    color: var(--text-muted);
+  }
+
+  .file-icon svg { width: 16px; height: 16px; }
+
+  .file-meta {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .file-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .file-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .file-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .icon-btn {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background var(--transition), color var(--transition);
+  }
+
+  .icon-btn:hover { background: var(--bg); color: var(--text); }
+
+  .icon-btn.danger:hover { background: var(--danger-soft); color: var(--danger); }
+
+  .icon-btn svg { width: 16px; height: 16px; }
+
+  .confirm-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--danger-soft);
+    border-radius: 6px;
+    padding: 2px;
+  }
+
+  .confirm-pill button {
+    appearance: none;
+    border: none;
+    background: transparent;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: background var(--transition), color var(--transition);
+  }
+
+  .confirm-pill button.confirm {
+    color: var(--danger);
+  }
+
+  .confirm-pill button:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .confirm-pill button:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  .empty {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--text-subtle);
+    font-size: 13px;
+  }
+
+  .empty svg {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 8px;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 32px 16px 64px; }
+    .controls { flex-direction: column; }
+    .segmented { width: 100%; justify-content: stretch; }
+    .segmented button { flex: 1; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Tubeasy</h1>
+      <p>Colle un lien YouTube, télécharge en MP3 ou MP4.</p>
+    </header>
+
+    <div class="card">
+      <form id="dl-form" class="form-row" autocomplete="off">
+        <input
+          id="url"
+          name="url"
+          type="url"
+          required
+          placeholder="https://www.youtube.com/watch?v=..."
+          autocapitalize="off"
+          autocorrect="off"
+          spellcheck="false"
+        >
+        <div class="controls">
+          <div class="segmented" role="tablist" aria-label="Format">
+            <button type="button" data-format="mp3" class="active" role="tab" aria-selected="true">MP3</button>
+            <button type="button" data-format="mp4" role="tab" aria-selected="false">MP4</button>
+          </div>
+          <button type="submit" class="btn-primary" id="submit">
+            <span id="submit-label">Télécharger</span>
+          </button>
+        </div>
+        <div class="alert" id="alert" role="alert"></div>
+      </form>
+    </div>
+
+    <div class="section-title">Historique</div>
+    <ul class="file-list" id="files"></ul>
+  </div>
+
+<script>
+  const ICONS = {
+    audio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
+    video: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>',
+    download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+    trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+    inbox: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11Z"/></svg>',
+  };
+
+  const form = document.getElementById('dl-form');
+  const urlInput = document.getElementById('url');
+  const submitBtn = document.getElementById('submit');
+  const submitLabel = document.getElementById('submit-label');
+  const alertBox = document.getElementById('alert');
+  const filesList = document.getElementById('files');
+  const segButtons = document.querySelectorAll('.segmented button');
+
+  let currentFormat = 'mp3';
+
+  segButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      segButtons.forEach((b) => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      currentFormat = btn.dataset.format;
+    });
+  });
+
+  function showError(msg) {
+    alertBox.textContent = msg;
+    alertBox.classList.add('visible');
+  }
+
+  function clearError() {
+    alertBox.textContent = '';
+    alertBox.classList.remove('visible');
+  }
+
+  function setLoading(loading) {
+    submitBtn.disabled = loading;
+    urlInput.disabled = loading;
+    if (loading) {
+      submitLabel.textContent = 'Téléchargement…';
+      const spinner = document.createElement('span');
+      spinner.className = 'spinner';
+      submitBtn.prepend(spinner);
+    } else {
+      submitLabel.textContent = 'Télécharger';
+      const spinner = submitBtn.querySelector('.spinner');
+      if (spinner) spinner.remove();
+    }
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return `${bytes} o`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} Ko`;
+    if (bytes < 1024 * 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} Mo`;
+    return `${(bytes / 1024 / 1024 / 1024).toFixed(2)} Go`;
+  }
+
+  function formatRelative(epochSeconds) {
+    const diff = Date.now() / 1000 - epochSeconds;
+    if (diff < 60) return 'à l’instant';
+    if (diff < 3600) return `il y a ${Math.floor(diff / 60)} min`;
+    if (diff < 86400) return `il y a ${Math.floor(diff / 3600)} h`;
+    if (diff < 86400 * 2) return 'hier';
+    const days = Math.floor(diff / 86400);
+    if (days < 7) return `il y a ${days} j`;
+    return new Date(epochSeconds * 1000).toLocaleDateString('fr-FR');
+  }
+
+  function isAudio(name) {
+    return /\.(mp3|m4a|ogg|opus|wav|flac|aac)$/i.test(name);
+  }
+
+  function renderEmpty() {
+    filesList.innerHTML = `
+      <li class="empty">
+        ${ICONS.inbox}
+        <div>Aucun téléchargement pour l'instant</div>
+      </li>`;
+  }
+
+  function renderFiles(files) {
+    if (!files.length) {
+      renderEmpty();
+      return;
+    }
+    filesList.innerHTML = '';
+    for (const f of files) {
+      const li = document.createElement('li');
+      li.className = 'file-item';
+      li.dataset.name = f.filename;
+
+      const icon = document.createElement('div');
+      icon.className = 'file-icon';
+      icon.innerHTML = isAudio(f.filename) ? ICONS.audio : ICONS.video;
+
+      const meta = document.createElement('div');
+      meta.className = 'file-meta';
+      const name = document.createElement('div');
+      name.className = 'file-name';
+      name.textContent = f.filename;
+      name.title = f.filename;
+      const sub = document.createElement('div');
+      sub.className = 'file-sub';
+      sub.textContent = `${formatSize(f.size)} · ${formatRelative(f.mtime)}`;
+      meta.append(name, sub);
+
+      const actions = document.createElement('div');
+      actions.className = 'file-actions';
+
+      const dl = document.createElement('a');
+      dl.className = 'icon-btn';
+      dl.href = `/api/files/${encodeURIComponent(f.filename)}`;
+      dl.setAttribute('download', f.filename);
+      dl.title = 'Télécharger';
+      dl.setAttribute('aria-label', 'Télécharger');
+      dl.innerHTML = ICONS.download;
+
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'icon-btn danger';
+      del.title = 'Supprimer';
+      del.setAttribute('aria-label', 'Supprimer');
+      del.innerHTML = ICONS.trash;
+      del.addEventListener('click', () => askDelete(li, f.filename, del));
+
+      actions.append(dl, del);
+      li.append(icon, meta, actions);
+      filesList.append(li);
+    }
+  }
+
+  function askDelete(li, filename, originalBtn) {
+    const actions = originalBtn.parentElement;
+    const downloadBtn = actions.querySelector('a');
+    if (downloadBtn) downloadBtn.style.display = 'none';
+    originalBtn.style.display = 'none';
+
+    const pill = document.createElement('div');
+    pill.className = 'confirm-pill';
+    const cancel = document.createElement('button');
+    cancel.type = 'button';
+    cancel.textContent = 'Annuler';
+    const confirm = document.createElement('button');
+    confirm.type = 'button';
+    confirm.className = 'confirm';
+    confirm.textContent = 'Supprimer';
+    pill.append(cancel, confirm);
+    actions.append(pill);
+
+    const restore = () => {
+      pill.remove();
+      if (downloadBtn) downloadBtn.style.display = '';
+      originalBtn.style.display = '';
+    };
+
+    const timer = setTimeout(restore, 4000);
+
+    cancel.addEventListener('click', () => {
+      clearTimeout(timer);
+      restore();
+    });
+
+    confirm.addEventListener('click', async () => {
+      clearTimeout(timer);
+      try {
+        const res = await fetch(`/api/files/${encodeURIComponent(filename)}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('delete failed');
+        li.classList.add('removing');
+        setTimeout(loadFiles, 180);
+      } catch {
+        restore();
+        showError('Suppression impossible.');
+      }
+    });
+  }
+
+  async function loadFiles() {
+    try {
+      const res = await fetch('/api/files');
+      const files = await res.json();
+      renderFiles(files);
+    } catch {
+      renderEmpty();
+    }
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearError();
+    const url = urlInput.value.trim();
+    if (!url) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch('/api/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, format: currentFormat }),
+      });
+      if (!res.ok) {
+        let detail = 'Échec du téléchargement.';
+        try {
+          const data = await res.json();
+          if (data && data.detail) detail = typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail);
+        } catch {}
+        throw new Error(detail);
+      }
+      urlInput.value = '';
+      await loadFiles();
+    } catch (err) {
+      showError(err.message || 'Une erreur est survenue.');
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  loadFiles();
+</script>
+</body>
+</html>
